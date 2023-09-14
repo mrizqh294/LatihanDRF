@@ -56,6 +56,7 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework.views import APIView
 from snippets.models import Snippet
 from rest_framework import renderers
 from .permissions import IsOwnerOrReadOnly
@@ -86,4 +87,27 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+class userLoginViews(APIView):
+    permission_classes = [permissions.AllowAny]
+    def post(self, request):
+        username = request.data['username']
+        password = request.data['password']
+
+        user = User.objects.filter(username=username)
+
+        if user is None :
+            return Response({
+                "message" : "user tidak ditemukan"
+            })
+        
+        # if not user.check_password(password) :
+        #     return Response({
+        #         "message" : "password yang anda masukan salah"
+        #     })
+       
+       
+        return Response({
+            'messege': 'anda berhasi login',
+        })
     
