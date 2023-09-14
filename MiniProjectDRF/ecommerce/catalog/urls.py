@@ -7,10 +7,14 @@ products = views.ProdukViews.as_view({
     'post' : 'create',
     })
 
+# product = views.ProdukViews.as_view({
+
+# })
+
 
 urlpatterns = format_suffix_patterns([
     path('products/', products, name="products" ),
-    path('products/<int:pk>',views.ProdukViews.as_view({'get': 'retrieve'})),
+    path('products/<int:pk>',views.ProdukViews.as_view({'get': 'retrieve', 'put' : 'update'})),
     path('kategori/', views.KategoriViews.as_view()),
     path('users/', views.userListViews.as_view()),
 ]) 

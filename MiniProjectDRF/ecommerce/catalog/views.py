@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from django.http import HttpResponse
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import generics,viewsets
@@ -12,7 +11,7 @@ from .models import KategoriProduk,Produk
 from .serializers import KategoriSerializers, ProdukSerializers,userSerializers,userRegisSerializers,LoginSerializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-# Create your views here.
+
 
 class KategoriViews (generics.ListCreateAPIView):
     queryset = KategoriProduk.objects.all()
@@ -47,7 +46,6 @@ class ProdukViews(viewsets.ModelViewSet):
                 queryset = queryset[int(offset):int(limit)]      
         
         jumlahData = queryset.count()
-
         
         return (queryset,jumlahData)
     
@@ -86,6 +84,7 @@ class ProdukViews(viewsets.ModelViewSet):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
     def retrieve(self, request, pk = None):
         queryset = self.get_queryset()[0]
         produk = get_object_or_404(queryset, pk=pk)
@@ -96,13 +95,17 @@ class ProdukViews(viewsets.ModelViewSet):
         }
         return Response(response)
     
-    # def update(self, request, pk = None):
-    #     queryset = self.get_queryset()[0]
-    #     produk = get_object_or_404(queryset, pk=pk)
-    #     serializer = ProdukSerializers(data = request.data)
-    #     if serializer.is_valid():
-            
-    #     return super().update(request, *args, **kwargs)
+    def update(self, request, pk = None):
+
+        queryset = self.get_queryset()[0]
+        produk = get_object_or_404(queryset, pk=pk)
+        serializer = ProdukSerializers(produk, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+
+        return Response({
+            "message" : "data produk berhasil diupdate"
+        })
           
 
 class userRegisterViews (generics.CreateAPIView):
